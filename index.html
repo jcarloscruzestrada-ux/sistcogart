@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Guía de Estudio - Sistemas Cognitivos Artificiales</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#ff6b35;--secondary:#f7931e;--accent:#4ecdc4;--success:#95e1d3;--purple:#a66bff;--dark:#2d3436;--danger:#ff4757}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Poppins',sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;color:#2d3436}
+.header{background:linear-gradient(135deg,#ff6b35,#f7931e);color:#fff;padding:2rem;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.3);position:sticky;top:0;z-index:1000}
+.header h1{font-size:2.2rem;font-weight:800;margin-bottom:.5rem;text-shadow:2px 2px 4px rgba(0,0,0,.2)}
+.progress-container{background:rgba(255,255,255,.2);height:6px;border-radius:10px;overflow:hidden;margin-top:1rem}
+.progress-bar{height:100%;background:linear-gradient(90deg,#4ecdc4,#95e1d3);width:0%;transition:width .5s}
+.nav{background:#fff;padding:1rem;display:flex;gap:.5rem;overflow-x:auto;box-shadow:0 2px 10px rgba(0,0,0,.1);position:sticky;top:120px;z-index:999}
+.nav-btn{padding:.75rem 1.5rem;border:2px solid #e0e0e0;background:#fff;border-radius:25px;cursor:pointer;transition:all .3s;font-weight:600;white-space:nowrap;font-size:.9rem}
+.nav-btn:hover{background:var(--primary);color:#fff;border-color:var(--primary);transform:translateY(-2px)}
+.nav-btn.active{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;border-color:var(--secondary)}
+.container{max-width:1400px;margin:2rem auto;padding:0 2rem}
+.section{display:none}
+.section.active{display:block;animation:fadeIn .5s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.card{background:#fff;border-radius:20px;padding:2.5rem;margin-bottom:2rem;box-shadow:0 8px 30px rgba(0,0,0,.15);border-left:5px solid var(--primary)}
+.card-title{font-size:2rem;font-weight:700;color:var(--primary);margin-bottom:1.5rem;display:flex;align-items:center;gap:1rem}
+.card-icon{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem}
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;margin:2rem 0}
+.concept-box{background:linear-gradient(135deg,#fff5e6,#ffe5cc);padding:2rem;border-radius:15px;border-left:5px solid var(--secondary);transition:all .3s;cursor:pointer}
+.concept-box:hover{transform:translateY(-5px);box-shadow:0 10px 30px rgba(247,147,30,.3)}
+.concept-box h3{color:var(--primary);font-size:1.3rem;margin-bottom:1rem;font-weight:700}
+.summary-box{background:linear-gradient(135deg,#e8f8f5,#d5f4e6);padding:2rem;border-radius:20px;margin:2rem 0;border-left:6px solid var(--accent)}
+.summary-box h3{color:#16a085;font-size:1.5rem;margin-bottom:1rem;font-weight:700}
+.summary-box ul{list-style:none;padding-left:0}
+.summary-box li{padding:.75rem 0;padding-left:2.5rem;position:relative;font-size:1.05rem}
+.summary-box li:before{content:"✓";position:absolute;left:0;color:var(--accent);font-weight:700;font-size:1.5rem}
+.highlight{background:linear-gradient(135deg,#fff3cd,#ffe5a1);padding:1.5rem;border-radius:15px;border-left:5px solid #ffc107;margin:1.5rem 0;font-weight:500}
+.info-box{background:linear-gradient(135deg,#e3f2fd,#bbdefb);padding:1.5rem;border-radius:15px;border-left:5px solid var(--accent);margin:1.5rem 0}
+.info-box h4{color:#0277bd;margin-bottom:.75rem;font-weight:700}
+.flashcard-container{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem;margin:2rem 0}
+.flashcard{perspective:1000px;height:250px;cursor:pointer}
+.flashcard-inner{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+.flashcard.flipped .flashcard-inner{transform:rotateY(180deg)}
+.flashcard-front,.flashcard-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:15px;padding:2rem;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;box-shadow:0 8px 25px rgba(0,0,0,.1)}
+.flashcard-front{background:linear-gradient(135deg,var(--secondary),#ffa726);color:#fff}
+.flashcard-back{background:linear-gradient(135deg,var(--accent),#66d9d0);color:#fff;transform:rotateY(180deg)}
+.quiz-card{background:#fff;border-radius:20px;padding:2.5rem;margin-bottom:2rem;box-shadow:0 10px 40px rgba(0,0,0,.15);border-top:5px solid var(--purple)}
+.quiz-stats{display:flex;justify-content:center;gap:3rem;margin:2rem 0}
+.stat-value{font-size:3rem;font-weight:900;background:linear-gradient(135deg,var(--primary),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat-label{font-size:.9rem;color:#546e7a;margin-top:.5rem;font-weight:600}
+.question-card{background:#f8f9fa;border-radius:15px;padding:2rem;margin-bottom:2rem;border-left:5px solid var(--primary)}
+.question-number{background:var(--primary);color:#fff;padding:.5rem 1.5rem;border-radius:25px;display:inline-block;font-weight:700;margin-bottom:1.5rem}
+.question-text{font-size:1.3rem;font-weight:600;color:#263238;margin-bottom:1.5rem}
+.options{display:flex;flex-direction:column;gap:1rem}
+.option{background:#fff;padding:1.25rem 1.5rem;border-radius:12px;border:3px solid #e0e0e0;cursor:pointer;transition:all .3s;display:flex;align-items:center;gap:1rem}
+.option:hover{border-color:var(--accent);transform:translateX(8px)}
+.option-letter{background:#e0e0e0;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0}
+.option.selected{background:#fff5e6;border-color:var(--primary)}
+.option.selected .option-letter{background:var(--primary);color:#fff}
+.option.correct{background:#e8f8f5;border-color:var(--accent)}
+.option.correct .option-letter{background:var(--accent);color:#fff}
+.option.incorrect{background:#ffebee;border-color:var(--danger)}
+.option.incorrect .option-letter{background:var(--danger);color:#fff}
+.explanation{background:#fff3e0;padding:1.5rem;border-radius:12px;margin-top:1.5rem;border-left:5px solid var(--secondary);display:none}
+.explanation.show{display:block;animation:slideDown .4s}
+@keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+.btn-group{display:flex;gap:1rem;justify-content:center;margin-top:2rem}
+.btn{padding:1rem 3rem;border:none;border-radius:50px;font-weight:700;font-size:1.1rem;cursor:pointer;transition:all .3s}
+.btn-primary{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(255,107,53,.4)}
+.btn-success{background:linear-gradient(135deg,var(--accent),var(--success));color:#fff}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);z-index:2000}
+.modal-overlay.show{display:block}
+.modal{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;padding:3rem;border-radius:30px;box-shadow:0 20px 60px rgba(0,0,0,.4);z-index:2001;max-width:600px;width:90%;text-align:center}
+.modal.show{display:block;animation:modalPop .5s}
+@keyframes modalPop{0%{transform:translate(-50%,-50%) scale(.7);opacity:0}100%{transform:translate(-50%,-50%) scale(1);opacity:1}}
+.final-score{font-size:5rem;font-weight:900;background:linear-gradient(135deg,var(--primary),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:1.5rem 0}
+.performance-badge{display:inline-block;padding:.75rem 2rem;border-radius:50px;font-weight:700;font-size:1.2rem;margin:1rem 0}
+.badge-excellent{background:#e8f8f5;color:#16a085}
+.badge-good{background:#fff5e6;color:#e67e22}
+.badge-fair{background:#fef5e7;color:#d68910}
+.badge-poor{background:#ffebee;color:#c62828}
+@media(max-width:768px){.header h1{font-size:1.6rem}.nav{padding:1rem;gap:.5rem}.concept-grid{grid-template-columns:1fr}.final-score{font-size:3.5rem}}
+</style>
+</head>
+<body>
+<div class="header">
+<h1>🧠 Sistemas Cognitivos Artificiales</h1>
+<p>Guía de Estudio Completa para Examen Final</p>
+<div class="progress-container"><div class="progress-bar" id="progress"></div></div>
+</div>
+
+<div class="nav">
+<button class="nav-btn active" onclick="showSection('inicio')">🏠 Inicio</button>
+<button class="nav-btn" onclick="showSection('tema1')">1️⃣ Deep Learning</button>
+<button class="nav-btn" onclick="showSection('tema2')">2️⃣ Entrenamiento</button>
+<button class="nav-btn" onclick="showSection('tema3')">3️⃣ Frameworks</button>
+<button class="nav-btn" onclick="showSection('tema4')">4️⃣ Aspectos Prácticos</button>
+<button class="nav-btn" onclick="showSection('tema5')">5️⃣ CNN</button>
+<button class="nav-btn" onclick="showSection('tema6')">6️⃣ Word Vectors</button>
+<button class="nav-btn" onclick="showSection('tema7')">7️⃣ RNN</button>
+<button class="nav-btn" onclick="showSection('tema8')">8️⃣ Deep RL</button>
+<button class="nav-btn" onclick="showSection('tema9')">9️⃣ Big Data</button>
+<button class="nav-btn" onclick="showSection('tema10')">🔟 Producción</button>
+<button class="nav-btn" onclick="showSection('tema11')">1️⃣1️⃣ Avances</button>
+<button class="nav-btn" onclick="showSection('flashcards')">🃏 Flashcards</button>
+<button class="nav-btn" onclick="showSection('cuestionario')">🎯 Cuestionario</button>
+</div>
+
+<div class="container">
+<!-- INICIO -->
+<div id="inicio" class="section active">
+<div class="card">
+<h2 class="card-title"><div class="card-icon">🎓</div>Bienvenido a tu Guía de Estudio</h2>
+<div class="summary-box">
+<h3>🎯 Estructura del Curso</h3>
+<p style="font-size:1.1rem;margin-bottom:1rem">Esta guía cubre los 11 temas fundamentales de Sistemas Cognitivos Artificiales para tu examen final.</p>
+</div>
+<div class="concept-grid">
+<div class="concept-box" onclick="showSection('tema1')"><h3>1. Introducción al Deep Learning</h3><p>Fundamentos, historia, casos de éxito, inspiración biológica</p></div>
+<div class="concept-box" onclick="showSection('tema2')"><h3>2. Entrenamiento de Redes</h3><p>Backpropagation, Gradient Descent, optimizadores, regularización</p></div>
+<div class="concept-box" onclick="showSection('tema3')"><h3>3. Frameworks</h3><p>TensorFlow, Keras, PyTorch, comparativas</p></div>
+<div class="concept-box" onclick="showSection('tema4')"><h3>4. Aspectos Prácticos</h3><p>Funciones de activación, inicialización, Batch Norm, Transfer Learning</p></div>
+<div class="concept-box" onclick="showSection('tema5')"><h3>5. CNN</h3><p>Redes convolucionales, arquitecturas famosas, aplicaciones</p></div>
+<div class="concept-box" onclick="showSection('tema6')"><h3>6. Word Vectors</h3><p>Word2Vec, GloVe, FastText, embeddings</p></div>
+<div class="concept-box" onclick="showSection('tema7')"><h3>7. RNN</h3><p>Redes recurrentes, LSTM, GRU, aplicaciones</p></div>
+<div class="concept-box" onclick="showSection('tema8')"><h3>8. Deep RL</h3><p>Reinforcement Learning, DQN, Policy Gradients</p></div>
+<div class="concept-box" onclick="showSection('tema9')"><h3>9. Big Data</h3><p>Procesamiento distribuido, Spark, paralelismo</p></div>
+<div class="concept-box" onclick="showSection('tema10')"><h3>10. Producción</h3><p>MLOps, Docker, Kubernetes, deployment</p></div>
+<div class="concept-box" onclick="showSection('tema11')"><h3>11. Últimos Avances</h3><p>Transformers, BERT, GPT, GANs, ViT</p></div>
+</div>
+<div class="highlight"><strong>💡 Recomendación:</strong> Estudia cada tema, practica con las flashcards y evalúate con el cuestionario final. ¡Éxito en tu examen!</div>
+</div>
+</div>
+
+<!-- TEMA 1 -->
+<div id="tema1" class="section">
+<div class="card">
+<h2 class="card-title"><div class="card-icon">1️⃣</div>Introducción al Deep Learning</h2>
+<div class="info-box"><h4>📌 Definición</h4><p>Deep Learning es un subcampo del Machine Learning que permite a las computadoras aprender representaciones de datos con múltiples niveles de abstracción usando redes neuronales profundas.</p></div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">✨ Factores Clave del Éxito</h3>
+<div class="concept-grid">
+<div class="concept-box"><h3>📊 Mayor Disponibilidad de Datos</h3><p>Internet, redes sociales, sensores IoT generan cantidades masivas de datos disponibles para entrenar modelos complejos.</p></div>
+<div class="concept-box"><h3>⚡ Mejora de Capacidad de Cómputo</h3><p>GPUs permiten entrenar redes profundas en tiempo razonable, acelerando cálculos matriciales masivos.</p></div>
+<div class="concept-box"><h3>🔧 Mejoras Algorítmicas</h3><p>Dropout, Batch Normalization, ReLU y nuevas técnicas de optimización mejoraron significativamente el entrenamiento.</p></div>
+</div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">🚀 Aplicaciones Exitosas</h3>
+<div class="summary-box"><h3>Principales Áreas de Aplicación</h3><ul><li>Visión por computador: Reconocimiento facial, detección de objetos, segmentación</li><li>Procesamiento de lenguaje natural: Traducción automática, análisis de sentimientos, chatbots</li><li>Reconocimiento del habla: Asistentes virtuales (Siri, Alexa, Google Assistant)</li><li>Aprendizaje por refuerzo: AlphaGo venció al campeón mundial de Go</li></ul></div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">🧠 Componentes de una Red Neuronal</h3>
+<div class="concept-grid">
+<div class="concept-box"><h3>Neurona Artificial</h3><p>Unidad básica que recibe inputs, aplica pesos, suma, agrega bias y aplica función de activación: y = f(Σwᵢxᵢ + b)</p></div>
+<div class="concept-box"><h3>Pesos (Weights)</h3><p>Parámetros que se aprenden durante el entrenamiento, determinan la importancia de cada input</p></div>
+<div class="concept-box"><h3>Bias</h3><p>Término independiente que permite desplazar la función de activación</p></div>
+<div class="concept-box"><h3>Función de Activación</h3><p>Introduce no-linealidad: sigmoid, tanh, ReLU</p></div>
+</div>
+<div class="highlight"><strong>🎯 Punto Clave:</strong> Las redes neuronales se inspiran en el cerebro pero con diferencias significativas. La función de activación es crucial para permitir que la red aprenda patrones no lineales.</div>
+</div>
+</div>
+
+<!-- TEMA 2 -->
+<div id="tema2" class="section">
+<div class="card">
+<h2 class="card-title"><div class="card-icon">2️⃣</div>Entrenamiento de Redes Neuronales</h2>
+<div class="info-box"><h4>📌 Objetivo del Entrenamiento</h4><p>Ajustar pesos y biases para minimizar una función de pérdida (loss function) que mide la diferencia entre predicciones y valores reales.</p></div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">🔄 Backpropagation</h3>
+<div class="concept-box"><h3>Algoritmo Fundamental</h3><p>• Calcula gradientes de la función de pérdida respecto a cada peso<br>• Usa la regla de la cadena para propagar el error desde la salida hacia capas anteriores<br>• Permite actualizar eficientemente todos los pesos de la red</p></div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">📉 Gradient Descent</h3>
+<div class="concept-grid">
+<div class="concept-box"><h3>Batch GD</h3><p>Usa TODO el dataset en cada iteración. Lento para datasets grandes pero convergencia suave.</p></div>
+<div class="concept-box"><h3>Stochastic GD (SGD)</h3><p>Usa UN ejemplo a la vez. Rápido pero ruidoso, convergencia errática.</p></div>
+<div class="concept-box"><h3>Mini-batch GD ⭐</h3><p>Compromiso óptimo. Batch sizes típicos: 32, 64, 128, 256. El MÁS USADO.</p></div>
+</div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">⚙️ Learning Rate</h3>
+<div class="highlight"><strong>🎯 HIPERPARÁMETRO MÁS IMPORTANTE:</strong><br>• Muy alto → divergencia, saltos erráticos<br>• Muy bajo → convergencia lenta, mínimos locales<br>• Valores típicos: 0.001, 0.0001, 0.00001</div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">🚀 Optimizadores Avanzados</h3>
+<div class="concept-grid">
+<div class="concept-box"><h3>Momentum</h3><p>Acumula velocidad en direcciones consistentes del gradiente, acelera convergencia</p></div>
+<div class="concept-box"><h3>RMSprop</h3><p>Adapta learning rate por parámetro usando promedio móvil de gradientes al cuadrado</p></div>
+<div class="concept-box" style="border-left:5px solid var(--primary)"><h3>Adam ⭐⭐⭐</h3><p>Combina Momentum y RMSprop. El MÁS USADO. Parámetros: lr=0.001, β₁=0.9, β₂=0.999</p></div>
+<div class="concept-box"><h3>AdaGrad</h3><p>Adapta learning rate basado en frecuencia de actualizaciones</p></div>
+</div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">📊 Funciones de Pérdida</h3>
+<div class="concept-grid">
+<div class="concept-box"><h3>MSE (Regresión)</h3><p>Mean Squared Error - Penaliza errores grandes cuadráticamente</p></div>
+<div class="concept-box"><h3>Cross-Entropy (Clasificación)</h3><p>Mide divergencia entre distribuciones de probabilidad</p></div>
+<div class="concept-box"><h3>Binary Cross-Entropy</h3><p>Para clasificación binaria (2 clases)</p></div>
+<div class="concept-box"><h3>Categorical Cross-Entropy</h3><p>Para clasificación multiclase</p></div>
+</div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">🛡️ Regularización - Prevenir Overfitting</h3>
+<div class="summary-box"><h3>Técnicas de Regularización</h3><ul><li>L1 (Lasso): Penaliza suma de valores absolutos, induce sparsity</li><li>L2 (Ridge): Penaliza suma de cuadrados, mantiene pesos pequeños</li><li>Dropout: Apaga neuronas aleatoriamente (p=0.5), fuerza redundancia</li><li>Early Stopping: Detener cuando error de validación aumenta</li><li>Data Augmentation: Aumentar datos artificialmente (rotaciones, flips)</li></ul></div>
+<div class="highlight"><strong>📚 División de Datos:</strong> Training (70-80%), Validation (10-15%), Test (10-15%). ¡Nunca usar test set durante entrenamiento!</div>
+</div>
+</div>
+
+<!-- TEMA 3 -->
+<div id="tema3" class="section">
+<div class="card">
+<h2 class="card-title"><div class="card-icon">3️⃣</div>Frameworks de Deep Learning</h2>
+<div class="info-box"><h4>📌 ¿Por qué usar Frameworks?</h4><p>Proveen APIs de alto nivel, cálculo automático de gradientes, optimización y soporte para GPUs. Evitan errores y aceleran desarrollo.</p></div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">🔥 Principales Frameworks</h3>
+<div class="concept-grid">
+<div class="concept-box"><h3>🟦 TensorFlow</h3><p>• Google Brain (2015)<br>• Grafo estático → dinámico (TF 2.x)<br>• Excelente para PRODUCCIÓN<br>• Ecosystem: Serving, Lite, .js</p></div>
+<div class="concept-box"><h3>🔶 Keras</h3><p>• API de alto nivel simple<br>• Integrada en TensorFlow (tf.keras)<br>• Ideal para PROTOTIPADO rápido<br>• Perfecto para principiantes</p></div>
+<div class="concept-box" style="border-left:5px solid var(--primary)"><h3>🔥 PyTorch ⭐</h3><p>• Facebook AI (2016)<br>• Grafos DINÁMICOS (define-by-run)<br>• Preferido en INVESTIGACIÓN<br>• Sintaxis pythonic</p></div>
+<div class="concept-box"><h3>⚡ Otros</h3><p>• Caffe: Visión rápida<br>• MXNet: Amazon<br>• JAX: Google research</p></div>
+</div>
+<div class="highlight"><strong>⚖️ TensorFlow vs PyTorch:</strong><br>• TensorFlow: Mejor para producción, ecosistema maduro<br>• PyTorch: Mejor para investigación, más flexible, debugging más simple</div>
+</div>
+</div>
+
+<!-- TEMA 4 -->
+<div id="tema4" class="section">
+<div class="card">
+<h2 class="card-title"><div class="card-icon">4️⃣</div>Aspectos Prácticos del Entrenamiento</h2>
+<h3 style="color:var(--primary);margin:1rem 0">⚡ Funciones de Activación</h3>
+<div class="concept-grid">
+<div class="concept-box"><h3>Sigmoid</h3><p>Output [0,1]. Problema: Vanishing gradient. NO recomendada para capas ocultas</p></div>
+<div class="concept-box"><h3>Tanh</h3><p>Output [-1,1]. Mejor que sigmoid pero aún vanishing gradient</p></div>
+<div class="concept-box" style="border-left:5px solid var(--primary)"><h3>ReLU ⭐⭐⭐</h3><p>f(x)=max(0,x). La MÁS USADA. Simple, rápida, no satura. Problema: Dying ReLU</p></div>
+<div class="concept-box"><h3>Leaky ReLU</h3><p>f(x)=max(0.01x,x). Soluciona dying ReLU</p></div>
+<div class="concept-box"><h3>ELU</h3><p>Suaviza negativos exponencialmente. Media cercana a cero</p></div>
+<div class="concept-box"><h3>Maxout</h3><p>Generaliza ReLU. Más parámetros pero más expresiva</p></div>
+</div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">🎲 Inicialización de Pesos</h3>
+<div class="concept-grid">
+<div class="concept-box"><h3>Xavier/Glorot</h3><p>Diseñada para sigmoid/tanh. Mantiene varianza constante entre capas</p></div>
+<div class="concept-box" style="border-left:5px solid var(--primary)"><h3>He Initialization ⭐</h3><p>Óptima para ReLU. Considera que ReLU mata mitad de neuronas</p></div>
+</div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">📊 Batch Normalization</h3>
+<div class="highlight"><strong>🚀 Beneficios:</strong><br>• Acelera DRAMÁTICAMENTE el entrenamiento<br>• Permite learning rates más altos<br>• Reduce sensibilidad a inicialización<br>• Actúa como regularización<br>• Normaliza activaciones por mini-batch</div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">🔄 Transfer Learning</h3>
+<div class="info-box"><h4>Reutilizar Modelos Pre-entrenados</h4><p>• Feature extraction: Congelar capas convolucionales, entrenar solo finales<br>• Fine-tuning: Entrenar también algunas conv con LR bajo<br>• Reduce tiempo y datos necesarios</p></div>
+</div>
+</div>
+
+<!-- TEMA 5 -->
+<div id="tema5" class="section">
+<div class="card">
+<h2 class="card-title"><div class="card-icon">5️⃣</div>Convolutional Neural Networks (CNN)</h2>
+<div class="info-box"><h4>📌 ¿Por qué CNNs?</h4><p>Redes fully connected tienen DEMASIADOS parámetros para imágenes. CNNs explotan estructura espacial y comparten parámetros → reducción dramática.</p></div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">🔍 Componentes Clave</h3>
+<div class="concept-grid">
+<div class="concept-box"><h3>Capa Convolucional</h3><p>Filtros (kernels) se deslizan sobre imagen. Detectan patrones (bordes, texturas, formas). Kernels típicos: 3x3, 5x5</p></div>
+<div class="concept-box"><h3>Pooling (Max Pooling)</h3><p>Reduce dimensionalidad espacial. Toma valor máximo de cada región. Da invarianza a traslaciones</p></div>
+<div class="concept-box"><h3>Arquitectura Típica</h3><p>CONV→ReLU→POOL→CONV→ReLU→POOL→...→Flatten→FC→Output</p></div>
+</div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">🏗️ Arquitecturas Famosas</h3>
+<div class="summary-box"><h3>Evolución de CNNs</h3><ul><li>LeNet-5 (1998): Primera CNN exitosa, dígitos 32x32</li><li>AlexNet (2012): Ganó ImageNet, marcó inicio era DL. 8 capas, ReLU, Dropout</li><li>VGG (2014): Muy profunda (16-19), solo kernels 3x3. 138M parámetros</li><li>GoogLeNet/Inception (2014): Módulos Inception paralelos. 22 capas, solo 5M params</li><li>ResNet (2015): Skip connections, 50-152 capas. Una de las MÁS INFLUYENTES</li><li>MobileNet: Para móviles, depthwise separable convolutions</li><li>EfficientNet (2019): Estado del arte en eficiencia</li></ul></div>
+<div class="highlight"><strong>🎯 ResNet:</strong> Las skip connections previenen vanishing gradient y permiten entrenar redes MUY profundas (hasta 1000 capas)</div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">📱 Aplicaciones</h3>
+<div class="concept-grid">
+<div class="concept-box"><h3>Clasificación</h3><p>Asignar etiqueta a imagen completa</p></div>
+<div class="concept-box"><h3>Detección</h3><p>YOLO, Faster R-CNN - localizar objetos</p></div>
+<div class="concept-box"><h3>Segmentación</h3><p>U-Net, Mask R-CNN - píxel a píxel</p></div>
+<div class="concept-box"><h3>Medicina</h3><p>Detección tumores, clasificación rayos X</p></div>
+</div>
+</div>
+</div>
+
+<!-- TEMA 6 -->
+<div id="tema6" class="section">
+<div class="card">
+<h2 class="card-title"><div class="card-icon">6️⃣</div>Word Vectors (Embeddings)</h2>
+<div class="info-box"><h4>📌 Problema</h4><p>Las computadoras no entienden palabras directamente. Necesitamos representarlas como números.</p></div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">🔢 One-Hot Encoding</h3>
+<div class="concept-box"><h3>Representación Simple pero Limitada</h3><p>• Vector con 1 en posición de palabra, 0 en resto<br>• Problemas: Alta dimensión (=vocab size), sparse, NO captura similaridad semántica<br>• 'perro' y 'gato' son igual de diferentes que 'perro' y 'avión'</p></div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">✨ Word Embeddings</h3>
+<div class="highlight"><strong>💡 Solución:</strong> Representaciones densas de baja dimensión (50-300) que capturan relaciones semánticas. Palabras similares → vectores cercanos</div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">🔤 Word2Vec</h3>
+<div class="concept-grid">
+<div class="concept-box"><h3>Skip-gram</h3><p>Predice palabras de contexto dada palabra central. Mejor para datasets pequeños y palabras raras</p></div>
+<div class="concept-box"><h3>CBOW</h3><p>Predice palabra central dado contexto. Más rápido que skip-gram</p></div>
+</div>
+<div class="info-box"><h4>🎯 Propiedad Notable</h4><p>Captura analogías mediante aritmética vectorial:<br>• king - man + woman ≈ queen<br>• Paris - France + Italy ≈ Rome<br>• walking - walk + swim ≈ swimming</p></div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">🌍 GloVe (Global Vectors)</h3>
+<div class="concept-box"><h3>Stanford 2014</h3><p>Factoriza matriz de co-ocurrencia global. Combina métodos globales y locales. Supera Word2Vec en analogías</p></div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">⚡ FastText</h3>
+<div class="concept-box"><h3>Facebook AI</h3><p>Extensión de Word2Vec considerando sub-palabras (n-gramas). Genera embeddings para palabras OOV (fuera de vocabulario)</p></div>
+<div class="highlight"><strong>🆕 Embeddings Contextuales:</strong> Word2Vec/GloVe dan UN vector por palabra. ELMo, BERT generan vectores diferentes según contexto ('banco' financiero vs 'banco' de peces)</div>
+</div>
+</div>
+
+<!-- TEMA 7 -->
+<div id="tema7" class="section">
+<div class="card">
+<h2 class="card-title"><div class="card-icon">7️⃣</div>Recurrent Neural Networks (RNN)</h2>
+<div class="info-box"><h4>📌 ¿Por qué RNNs?</h4><p>Redes feedforward no manejan bien datos secuenciales (texto, series temporales, audio). RNNs tienen conexiones recurrentes que permiten 'memoria'.</p></div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">🔄 Arquitectura RNN Básica</h3>
+<div class="concept-box"><h3>Estado Oculto</h3><p>• h_t = f(W_hh * h_{t-1} + W_xh * x_t + b)<br>• Mismo conjunto de pesos compartido en todos los pasos<br>• Procesa secuencias de longitud variable</p></div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">⚠️ Problema: Vanishing Gradient</h3>
+<div class="highlight"><strong>🔴 En secuencias largas:</strong> Gradientes se vuelven exponencialmente pequeños. La red 'olvida' información lejana. RNN vanilla no captura dependencias de largo plazo.</div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">🔐 LSTM (Long Short-Term Memory)</h3>
+<div class="summary-box"><h3>Solución al Vanishing Gradient (1997)</h3><ul><li>Cell state (C_t): 'Cinta transportadora' para información largo plazo</li><li>Forget gate: Decide qué desechar del cell state</li><li>Input gate: Decide qué nueva información agregar</li><li>Output gate: Decide qué mostrar como output</li></ul></div>
+<div class="info-box"><h4>✅ LSTM puede aprender dependencias de MUCHO más largo plazo que RNN vanilla</h4></div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">⚡ GRU (Gated Recurrent Unit)</h3>
+<div class="concept-box"><h3>Variante Simplificada (2014)</h3><p>• Solo 2 gates: reset y update<br>• Menos parámetros → más rápido<br>• Performance similar a LSTM</p></div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">↔️ Bidirectional RNNs</h3>
+<div class="concept-box"><h3>Contexto Pasado Y Futuro</h3><p>Procesa secuencia en AMBAS direcciones. Útil cuando toda la secuencia está disponible (traducción, clasificación)</p></div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">📱 Aplicaciones</h3>
+<div class="concept-grid">
+<div class="concept-box"><h3>NLP</h3><p>Traducción, análisis sentimientos, generación texto</p></div>
+<div class="concept-box"><h3>Speech</h3><p>Reconocimiento de voz</p></div>
+<div class="concept-box"><h3>Series Temporales</h3><p>Predicción stocks, clima</p></div>
+<div class="concept-box"><h3>Image Captioning</h3><p>Descripción automática de imágenes</p></div>
+</div>
+<div class="highlight"><strong>⚠️ Limitación:</strong> Procesamiento secuencial NO paralelizable → lento. Transformers (attention) están reemplazando RNNs en NLP</div>
+</div>
+</div>
+
+<!-- TEMA 8 -->
+<div id="tema8" class="section">
+<div class="card">
+<h2 class="card-title"><div class="card-icon">8️⃣</div>Deep Reinforcement Learning</h2>
+<div class="info-box"><h4>📌 ¿Qué es RL?</h4><p>Un agente aprende a tomar decisiones mediante interacción con un entorno, recibiendo recompensas o penalizaciones.</p></div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">🧩 Componentes Fundamentales</h3>
+<div class="concept-grid">
+<div class="concept-box"><h3>Agente</h3><p>El que toma decisiones</p></div>
+<div class="concept-box"><h3>Entorno</h3><p>Mundo con el que interactúa</p></div>
+<div class="concept-box"><h3>Estado (s)</h3><p>Situación actual del entorno</p></div>
+<div class="concept-box"><h3>Acción (a)</h3><p>Decisión tomada por agente</p></div>
+<div class="concept-box"><h3>Recompensa (r)</h3><p>Feedback positivo o negativo</p></div>
+<div class="concept-box"><h3>Política (π)</h3><p>Estrategia: mapea estados → acciones</p></div>
+</div>
+<div class="highlight"><strong>🎯 Objetivo:</strong> Maximizar recompensa acumulada TOTAL a largo plazo, no solo inmediata</div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">⚖️ Exploración vs Explotación</h3>
+<div class="info-box"><h4>Dilema Fundamental</h4><p>• Exploración: Probar acciones nuevas para descubrir mejores estrategias<br>• Explotación: Usar conocimiento actual para maximizar recompensa<br>• Equilibrar ambas para aprender eficientemente</p></div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">🎮 DQN (Deep Q-Network)</h3>
+<div class="summary-box"><h3>DeepMind 2015 - Innovaciones Clave</h3><ul><li>Combina Q-Learning con Deep Learning</li><li>Red neuronal aproxima Q(s,a) en lugar de tabla</li><li>Experience Replay: Memoria de transiciones, mini-batches aleatorios</li><li>Target Network: Red separada para calcular targets → estabilidad</li><li>Maneja espacios de estados ENORMES (píxeles de videojuegos)</li></ul></div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">🎭 Policy Gradients</h3>
+<div class="concept-box"><h3>Aprende Política Directamente</h3><p>• Aprende π(a|s) en lugar de Q(s,a)<br>• Maneja espacios de acciones continuos<br>• Algoritmos: REINFORCE, Actor-Critic, PPO, A3C</p></div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">🎪 Actor-Critic</h3>
+<div class="concept-box"><h3>Híbrido Value + Policy</h3><p>• Actor: Aprende política<br>• Critic: Evalúa acción tomada<br>• Reduce varianza de policy gradients</p></div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">🏆 Casos de Éxito</h3>
+<div class="concept-grid">
+<div class="concept-box"><h3>AlphaGo</h3><p>Venció campeón Go (2016). Deep RL + Monte Carlo + CNNs</p></div>
+<div class="concept-box"><h3>AlphaZero</h3><p>Aprende desde cero ajedrez, Go, shogi en horas</p></div>
+<div class="concept-box"><h3>DQN Atari</h3><p>Superó humanos en 49 juegos usando solo píxeles</p></div>
+<div class="concept-box"><h3>Robótica</h3><p>Control de robots, manipulación de objetos</p></div>
+</div>
+</div>
+</div>
+
+<!-- TEMA 9 -->
+<div id="tema9" class="section">
+<div class="card">
+<h2 class="card-title"><div class="card-icon">9️⃣</div>Redes Neuronales en Big Data</h2>
+<div class="info-box"><h4>📌 Desafíos</h4><p>• Datasets de TB/PB que NO caben en memoria<br>• Tiempo de entrenamiento prohibitivo en un solo device<br>• Necesidad de procesamiento distribuido</p></div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">⚡ Apache Spark</h3>
+<div class="concept-box"><h3>Framework de Procesamiento Distribuido</h3><p>• Procesamiento en memoria<br>• 100x más rápido que Hadoop MapReduce<br>• APIs: Scala, Java, Python, R<br>• Componentes: Spark SQL, MLlib, GraphX, Streaming</p></div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">🔀 Paralelismo de Datos (Data Parallelism)</h3>
+<div class="highlight"><strong>⭐ Estrategia MÁS COMÚN:</strong><br>• Cada worker tiene COPIA COMPLETA del modelo<br>• Datos se dividen entre workers<br>• Cada worker calcula gradientes en su subset<br>• Gradientes se agregan (promedio/suma) para actualizar modelo</div>
+<div class="concept-grid">
+<div class="concept-box"><h3>Síncrona</h3><p>Espera a todos los workers. Más estable pero puede ser lenta</p></div>
+<div class="concept-box"><h3>Asíncrona</h3><p>Workers actualizan independientemente. Más rápida pero inestable</p></div>
+</div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">🧩 Paralelismo de Modelo (Model Parallelism)</h3>
+<div class="concept-box"><h3>Para Modelos MUY Grandes</h3><p>• Modelo se DIVIDE entre workers<br>• Útil cuando modelo no cabe en un device<br>• Más complejo que data parallelism<br>• Mayor comunicación entre workers</p></div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">🛠️ Frameworks Distribuidos</h3>
+<div class="concept-grid">
+<div class="concept-box"><h3>Horovod</h3><p>Uber. Simplifica data parallelism. TF, Keras, PyTorch, MXNet</p></div>
+<div class="concept-box"><h3>TensorFlowOnSpark</h3><p>Integra TensorFlow con Spark</p></div>
+<div class="concept-box"><h3>Ray</h3><p>Apps distribuidas. Incluye RLlib y Tune</p></div>
+</div>
+<div class="info-box"><h4>⚙️ Consideraciones Prácticas</h4><p>• Batch size efectivo = batch_per_worker × num_workers<br>• Learning rate: Linear scaling rule al escalar<br>• Comunicación: InfiniBand o NVLink<br>• Gradient compression para ahorrar ancho de banda</p></div>
+</div>
+</div>
+
+<!-- TEMA 10 -->
+<div id="tema10" class="section">
+<div class="card">
+<h2 class="card-title"><div class="card-icon">🔟</div>Ecosistemas en la Nube y Producción</h2>
+<h3 style="color:var(--primary);margin:1rem 0">🔄 Ciclo de Vida ML</h3>
+<div class="summary-box"><h3>7 Etapas</h3><ul><li>1. Definición del problema y objetivos</li><li>2. Recolección y exploración de datos</li><li>3. Preparación (limpieza, feature engineering)</li><li>4. Entrenamiento y experimentación</li><li>5. Evaluación y validación</li><li>6. Deployment (producción)</li><li>7. Monitoreo y mantenimiento</li></ul></div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">🔧 MLOps</h3>
+<div class="info-box"><h4>DevOps para ML</h4><p>• Versionado: Código, datos, modelos (DVC, Git LFS)<br>• CI/CD: Integración y deployment continuo<br>• Monitoreo: Performance, data drift, model drift<br>• Reproducibilidad: Experimentos replicables</p></div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">🐳 Docker</h3>
+<div class="concept-box"><h3>Containerización</h3><p>• Empaqueta app + dependencias en contenedor portable<br>• Garantiza mismo comportamiento en dev, test, producción<br>• Dockerfile define imagen<br>• Docker Compose para múltiples contenedores</p></div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">☸️ Kubernetes</h3>
+<div class="concept-box"><h3>Orquestación de Contenedores</h3><p>• Auto-scaling basado en carga<br>• Self-healing: reinicia contenedores fallidos<br>• Load balancing automático</p></div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">🚀 Serving de Modelos</h3>
+<div class="concept-grid">
+<div class="concept-box"><h3>TensorFlow Serving</h3><p>Sistema flexible y rápido. REST API o gRPC. Versionado de modelos</p></div>
+<div class="concept-box"><h3>TorchServe</h3><p>Equivalente para PyTorch. APIs REST y gRPC. Métricas integradas</p></div>
+<div class="concept-box"><h3>ONNX Runtime</h3><p>Formato abierto. Convierte entre frameworks. Optimizado para inferencia</p></div>
+</div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">☁️ Plataformas Cloud</h3>
+<div class="concept-grid">
+<div class="concept-box"><h3>AWS</h3><p>SageMaker, EC2 P3/P4 (GPUs), S3 storage</p></div>
+<div class="concept-box"><h3>GCP</h3><p>AI Platform, TPUs, Vertex AI</p></div>
+<div class="concept-box"><h3>Azure</h3><p>Azure ML, Databricks</p></div>
+</div>
+<div class="highlight"><strong>📊 Monitoreo:</strong> Model drift (cambio en performance), Data drift (cambio en distribución). Alertas cuando métricas caen. Re-entrenamiento periódico.</div>
+</div>
+</div>
+
+<!-- TEMA 11 -->
+<div id="tema11" class="section">
+<div class="card">
+<h2 class="card-title"><div class="card-icon">1️⃣1️⃣</div>Últimos Avances en Deep Learning</h2>
+<h3 style="color:var(--primary);margin:1rem 0">🤖 Transformers</h3>
+<div class="info-box"><h4>'Attention is All You Need' (2017)</h4><p>• Basado COMPLETAMENTE en attention (sin recurrencia)<br>• Paralelización TOTAL (vs RNN)<br>• Captura dependencias largo alcance<br>• Self-Attention: cada palabra 'atiende' a todas las demás<br>• Multi-head attention: múltiples representaciones paralelas</p></div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">📚 BERT</h3>
+<div class="summary-box"><h3>Google 2018 - Bidireccional</h3><ul><li>Pre-entrena BIDIRECCIONAL (contexto izq Y der)</li><li>Masked Language Model: Predice palabras enmascaradas</li><li>Next Sentence Prediction: Oraciones consecutivas</li><li>Fine-tuning para tareas específicas</li><li>Revolucionó NLP: estado del arte en 11 tareas</li></ul></div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">💬 GPT (Generative Pre-trained Transformer)</h3>
+<div class="concept-grid">
+<div class="concept-box"><h3>GPT-1 (2018)</h3><p>Decoder autoregresivo. Pre-train + fine-tune</p></div>
+<div class="concept-box"><h3>GPT-2 (2019)</h3><p>1.5B parámetros. Texto coherente. Zero-shot learning</p></div>
+<div class="concept-box" style="border-left:5px solid var(--primary)"><h3>GPT-3 (2020) ⭐</h3><p>175B parámetros. Few-shot (5-10 ejemplos). Traducción, código, razonamiento</p></div>
+<div class="concept-box"><h3>ChatGPT/GPT-4</h3><p>RLHF. Conversacional. GPT-4 multimodal (texto+imagen)</p></div>
+</div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">🎨 GANs (Generative Adversarial Networks)</h3>
+<div class="info-box"><h4>Ian Goodfellow 2014</h4><p>• Generator (G): Genera datos falsos<br>• Discriminator (D): Distingue real vs falso<br>• Entrenamiento adversarial: juego minimax<br>• Variantes: DCGAN, StyleGAN, BigGAN</p></div>
+<div class="concept-grid">
+<div class="concept-box"><h3>Generación Imágenes</h3><p>Rostros, paisajes realistas</p></div>
+<div class="concept-box"><h3>Style Transfer</h3><p>Transferencia de estilo artístico</p></div>
+<div class="concept-box"><h3>Image-to-Image</h3><p>CycleGAN, pix2pix</p></div>
+<div class="concept-box"><h3>Super-Resolution</h3><p>Mejorar resolución</p></div>
+</div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">👁️ Vision Transformers (ViT)</h3>
+<div class="concept-box"><h3>Transformers para Imágenes (2020)</h3><p>• Divide imagen en patches (16x16)<br>• Trata patches como 'palabras'<br>• Rivaliza o supera CNNs<br>• Requiere MÁS datos que CNNs</p></div>
+<h3 style="color:var(--primary);margin:2rem 0 1rem">🆕 Otros Avances</h3>
+<div class="concept-grid">
+<div class="concept-box"><h3>Self-Supervised Learning</h3><p>Aprende sin etiquetas humanas. SimCLR, MoCo</p></div>
+<div class="concept-box"><h3>Few/Zero-Shot</h3><p>Aprender con pocos/sin ejemplos específicos</p></div>
+<div class="concept-box"><h3>Modelos Multimodales</h3><p>CLIP (visión+lenguaje), DALL-E (texto→imagen)</p></div>
+<div class="concept-box"><h3>NAS</h3><p>Neural Architecture Search. Diseño automático</p></div>
+</div>
+</div>
+</div>
+
+<!-- FLASHCARDS -->
+<div id="flashcards" class="section">
+<div class="card">
+<h2 class="card-title"><div class="card-icon">🃏</div>Flashcards Interactivas</h2>
+<p style="text-align:center;font-size:1.2rem;color:#546e7a;margin-bottom:2rem">Click en cada tarjeta para ver la definición</p>
+<div class="flashcard-container" id="flashcard-container"></div>
+</div>
+</div>
+
+<!-- CUESTIONARIO -->
+<div id="cuestionario" class="section">
+<div class="quiz-card">
+<div style="text-align:center">
+<h2 style="color:var(--primary);font-size:2.5rem;margin-bottom:1rem">🎯 Cuestionario Final</h2>
+<p style="color:#546e7a;margin-top:.5rem">Evalúa tu conocimiento de Sistemas Cognitivos Artificiales</p>
+</div>
+<div class="quiz-stats">
+<div class="stat"><div class="stat-value" id="current-q">1</div><div class="stat-label">Pregunta</div></div>
+<div class="stat"><div class="stat-value" id="score">0</div><div class="stat-label">Puntaje</div></div>
+<div class="stat"><div class="stat-value">50</div><div class="stat-label">Total</div></div>
+</div>
+<div id="quiz-container"></div>
+<div class="btn-group">
+<button class="btn btn-primary" id="check-btn" onclick="checkAnswer()">Verificar Respuesta</button>
+<button class="btn btn-success" id="next-btn" onclick="nextQuestion()" style="display:none">Siguiente →</button>
+</div>
+</div>
+</div>
+
+</div>
+
+<div class="modal-overlay" id="overlay" onclick="closeModal()"></div>
+<div class="modal" id="result-modal">
+<h2 style="font-size:2rem;color:var(--primary);margin-bottom:1rem">🎉 ¡Cuestionario Completado!</h2>
+<div class="final-score" id="final-score">0/50</div>
+<div class="performance-badge" id="badge"></div>
+<p id="feedback" style="font-size:1.1rem;color:#546e7a;margin:1.5rem 0"></p>
+<button class="btn btn-primary" onclick="restartQuiz()">🔄 Reintentar</button>
+</div>
+
+<script>
+let currentSection='inicio',currentQuestion=0,score=0,answered=!1,selectedOption=null;
+const flashcards=[
+{term:"Deep Learning",definition:"Subcampo de ML que aprende representaciones con múltiples niveles de abstracción usando redes neuronales profundas"},
+{term:"Backpropagation",definition:"Algoritmo que calcula gradientes usando regla de la cadena, propaga error desde salida hacia capas anteriores"},
+{term:"Adam",definition:"Optimizador MÁS USADO. Combina Momentum y RMSprop. Params: lr=0.001, β₁=0.9, β₂=0.999"},
+{term:"ReLU",definition:"f(x)=max(0,x). Función de activación MÁS USADA. Simple, rápida, no satura en régimen positivo"},
+{term:"Dropout",definition:"Regularización que apaga neuronas aleatoriamente (p=0.5) durante entrenamiento, fuerza redundancia"},
+{term:"Batch Normalization",definition:"Normaliza activaciones por mini-batch. Acelera entrenamiento, permite LR más altos, actúa como regularización"},
+{term:"CNN",definition:"Redes convolucionales que explotan estructura espacial de imágenes. Comparten parámetros → menos params"},
+{term:"ResNet",definition:"Arquitectura con skip connections que permite redes MUY profundas (50-152 capas), previene vanishing gradient"},
+{term:"Word2Vec",definition:"Embeddings de palabras. Skip-gram (predice contexto) y CBOW (predice palabra). Captura analogías"},
+{term:"LSTM",definition:"Long Short-Term Memory. Resuelve vanishing gradient con cell state y 3 gates (forget, input, output)"},
+{term:"GRU",definition:"Gated Recurrent Unit. Variante simplificada de LSTM con 2 gates. Menos parámetros, performance similar"},
+{term:"DQN",definition:"Deep Q-Network. Combina Q-Learning con DL. Experience Replay + Target Network para estabilidad"},
+{term:"Transfer Learning",definition:"Reutilizar modelo pre-entrenado (ej: ImageNet). Feature extraction o fine-tuning. Reduce datos y tiempo"},
+{term:"Overfitting",definition:"Modelo aprende ruido del training set. Alto accuracy en train, bajo en test. Solución: regularización"},
+{term:"Learning Rate",definition:"Hiperparámetro MÁS IMPORTANTE. Controla tamaño del paso en gradient descent. Típico: 0.001-0.00001"},
+{term:"Vanishing Gradient",definition:"En redes profundas/secuencias largas, gradientes → 0. La red no aprende. Solución: ReLU, LSTM, ResNet"},
+{term:"Data Parallelism",definition:"Estrategia MÁS COMÚN para distribuir. Cada worker tiene copia del modelo, datos divididos, gradientes agregados"},
+{term:"MLOps",definition:"DevOps para ML. Versionado, CI/CD, monitoreo, reproducibilidad. Automatiza ciclo de vida ML"},
+{term:"Transformer",definition:"Arquitectura basada en attention (sin recurrencia). Paralelización total. Base de BERT, GPT"},
+{term:"BERT",definition:"Pre-entrena BIDIRECCIONAL con MLM y NSP. Fine-tune para tareas. Revolucionó NLP (Google 2018)"},
+{term:"GPT-3",definition:"175B parámetros. Few-shot learning (5-10 ejemplos). Traducción, código, razonamiento (OpenAI 2020)"},
+{term:"GAN",definition:"Generator vs Discriminator. Entrenamiento adversarial. Genera imágenes realistas, style transfer"},
+{term:"Self-Attention",definition:"Mecanismo donde cada palabra 'atiende' a todas las demás. Base de Transformers"},
+{term:"One-Hot",definition:"Vector con 1 en posición de palabra, 0 resto. Problemas: alta dimensión, sparse, sin similaridad semántica"},
+{term:"Pooling",definition:"Reduce dimensionalidad espacial en CNNs. Max pooling (más común) toma valor máximo. Da invarianza"}
+];
+const questions=[
+{q:"¿Cuáles fueron los factores clave del éxito de Deep Learning?",opts:["Solo mejora de algoritmos","Datos disponibles + capacidad de cómputo + mejoras algorítmicas","Marketing agresivo","Reducción de costos"],correct:1,exp:"El éxito se debe a: (1) Mayor disponibilidad de datos, (2) Mejora de capacidad de cómputo (GPUs), (3) Mejoras algorítmicas"},
+{q:"¿Qué calcula el algoritmo de backpropagation?",opts:["Solo los outputs","Gradientes usando la regla de la cadena","Datos de entrada","Predicciones finales"],correct:1,exp:"Backpropagation usa la regla de la cadena para calcular gradientes de la función de pérdida respecto a cada peso"},
+{q:"¿Cuál es la variante MÁS USADA de Gradient Descent?",opts:["Batch GD","Stochastic GD","Mini-batch GD","No se usa GD"],correct:2,exp:"Mini-batch GD es el más usado, balancea eficiencia con convergencia. Batch sizes típicos: 32, 64, 128, 256"},
+{q:"¿Qué optimizador es el MÁS POPULAR actualmente?",opts:["SGD","Momentum","Adam","AdaGrad"],correct:2,exp:"Adam combina Momentum y RMSprop. Es el MÁS USADO. Parámetros típicos: lr=0.001, β₁=0.9, β₂=0.999"},
+{q:"¿Cuál es el hiperparámetro MÁS IMPORTANTE del entrenamiento?",opts:["Batch size","Número de capas","Learning rate","Número de épocas"],correct:2,exp:"Learning rate es el hiperparámetro MÁS IMPORTANTE. Controla el tamaño del paso en gradient descent"},
+{q:"¿Qué técnica 'apaga' neuronas aleatoriamente durante entrenamiento?",opts:["Batch Norm","L2 Regularization","Dropout","Pooling"],correct:2,exp:"Dropout apaga neuronas con probabilidad p (típicamente 0.5) durante entrenamiento, fuerza representaciones redundantes"},
+{q:"¿Cuál es la función de activación MÁS RECOMENDADA actualmente?",opts:["Sigmoid","Tanh","ReLU","Linear"],correct:2,exp:"ReLU es la MÁS USADA: f(x)=max(0,x). Simple, rápida, no satura en régimen positivo, acelera convergencia"},
+{q:"¿Para qué se usa He Initialization?",opts:["Sigmoid y Tanh","ReLU y sus variantes","Funciones lineales","No se usa"],correct:1,exp:"He Initialization está optimizada para ReLU, considera que ReLU 'mata' mitad de las neuronas"},
+{q:"¿Qué framework es MÁS POPULAR en investigación académica?",opts:["TensorFlow","Keras","PyTorch","Caffe"],correct:2,exp:"PyTorch es el preferido en investigación por sus grafos dinámicos, flexibilidad y sintaxis pythonic"},
+{q:"¿Qué hace Batch Normalization?",opts:["Normaliza datos de entrada","Normaliza activaciones de cada capa","Reduce batch size","Aumenta learning rate"],correct:1,exp:"Batch Normalization normaliza activaciones por mini-batch. Acelera dramáticamente el entrenamiento"},
+{q:"¿Por qué CNNs son mejores que redes FC para imágenes?",opts:["Son más rápidas siempre","Explotan estructura espacial + menos parámetros","Más fáciles de programar","No requieren GPUs"],correct:1,exp:"CNNs explotan la estructura espacial de imágenes y requieren dramáticamente menos parámetros que fully-connected"},
+{q:"¿Qué arquitectura CNN introdujo las skip connections?",opts:["AlexNet","VGG","ResNet","LeNet"],correct:2,exp:"ResNet introdujo skip connections permitiendo entrenar redes MUY profundas (50-152 capas) sin vanishing gradient"},
+{q:"¿Qué capa reduce dimensionalidad espacial en CNNs?",opts:["Convolutional","Fully Connected","Pooling","Dropout"],correct:2,exp:"Pooling (especialmente Max Pooling) reduce dimensionalidad espacial y da invarianza a pequeñas traslaciones"},
+{q:"Word2Vec tiene dos arquitecturas. ¿Cuáles son?",opts:["CNN y RNN","Skip-gram y CBOW","LSTM y GRU","Encoder y Decoder"],correct:1,exp:"Word2Vec tiene Skip-gram (predice contexto) y CBOW (predice palabra dado contexto)"},
+{q:"¿Qué propiedad notable tienen los word embeddings?",opts:["Compresión de datos","Aritmética vectorial para analogías","Clasificación automática","Traducción directa"],correct:1,exp:"king - man + woman ≈ queen. Los embeddings capturan relaciones semánticas mediante aritmética vectorial"},
+{q:"¿Qué problema resuelven las LSTM comparado con RNN vanilla?",opts:["Son más rápidas","Resuelven vanishing gradient y capturan dependencias largas","Más fáciles de programar","Necesitan menos datos"],correct:1,exp:"LSTM resuelve vanishing gradient con cell state y gates, capturando dependencias de MUCHO más largo plazo"},
+{q:"¿Cuántos gates tiene una LSTM?",opts:["1","2","3","4"],correct:2,exp:"LSTM tiene 3 gates: Forget gate, Input gate, Output gate (más el cell state)"},
+{q:"¿Qué es GRU?",opts:["Tipo de CNN","Variante simplificada de LSTM con 2 gates","Un optimizador","Una función de activación"],correct:1,exp:"GRU (Gated Recurrent Unit) es variante más simple de LSTM con solo 2 gates. Performance similar"},
+{q:"En Reinforcement Learning, ¿qué aprende DQN?",opts:["La política directamente","Función Q(s,a) con red neuronal","Solo estados","Solo acciones"],correct:1,exp:"DQN (Deep Q-Network) aprende función Q(s,a) que estima recompensa futura de cada acción en cada estado"},
+{q:"¿Qué técnica usa DQN para estabilidad?",opts:["Dropout","Experience Replay + Target Network","Batch Norm","Data Augmentation"],correct:1,exp:"DQN usa Experience Replay (memoria de transiciones) y Target Network (estabiliza aprendizaje)"},
+{q:"¿Qué es Data Parallelism?",opts:["Tener muchos datos","Dividir datos entre workers, sincronizar gradientes","Copiar datos","Eliminar datos"],correct:1,exp:"Data Parallelism: cada worker tiene copia del modelo, datos divididos, gradientes agregados. Estrategia MÁS COMÚN"},
+{q:"¿Qué es Apache Spark?",opts:["Un tipo de red neuronal","Framework de procesamiento distribuido","Una base de datos","Un optimizador"],correct:1,exp:"Apache Spark es framework de procesamiento distribuido en memoria, 100x más rápido que Hadoop MapReduce"},
+{q:"¿Qué es MLOps?",opts:["Operación matemática","DevOps aplicado a Machine Learning","Un framework de ML","Un tipo de optimizador"],correct:1,exp:"MLOps aplica DevOps a ML: versionado, CI/CD, monitoreo, reproducibilidad. Automatiza ciclo de vida"},
+{q:"¿Qué orquesta contenedores a escala?",opts:["Docker","Kubernetes","Python","TensorFlow"],correct:1,exp:"Kubernetes orquesta contenedores: auto-scaling, load balancing, self-healing, deployment automatizado"},
+{q:"¿Qué revolucionó NLP con 'Attention is All You Need'?",opts:["LSTM","CNN","Transformers","RNN"],correct:2,exp:"Transformers (2017) revolucionaron NLP con mecanismo de attention, eliminando recurrencia, permitiendo paralelización total"},
+{q:"¿Diferencia BERT vs GPT?",opts:["Son iguales","BERT bidireccional (MLM), GPT autoregresivo","GPT más antiguo","BERT no funciona"],correct:1,exp:"BERT pre-entrena BIDIRECCIONAL con Masked Language Model. GPT es autoregresivo (predice siguiente palabra)"},
+{q:"¿Qué son GANs?",opts:["Redes para clasificación","Generator vs Discriminator, entrenamiento adversarial","Un optimizador","Redes para regresión"],correct:1,exp:"GANs entrenan 2 redes: Generator (crea datos falsos) vs Discriminator (distingue real/falso)"},
+{q:"¿Qué permite Few-Shot Learning?",opts:["Usar muchos datos","Aprender con muy pocos ejemplos (5-10)","No aprender","Solo clasificación"],correct:1,exp:"Few-Shot Learning permite que modelos aprendan nuevas tareas con muy pocos ejemplos. GPT-3 lo demuestra"},
+{q:"¿Qué son Vision Transformers (ViT)?",opts:["CNNs mejoradas","Aplicar arquitectura Transformer a imágenes","RNNs para imágenes","No existen"],correct:1,exp:"Vision Transformers aplican Transformers a imágenes (divididas en patches), rivalizando con CNNs"},
+{q:"¿Cuál NO es un componente de Reinforcement Learning?",opts:["Agente","Entorno","Estado","Gradiente"],correct:3,exp:"Componentes de RL: Agente, Entorno, Estado, Acción, Recompensa, Política"},
+{q:"Si un modelo tiene alto accuracy en training pero bajo en test, ¿qué problema tiene?",opts:["Underfitting","Overfitting","Buen modelo","Necesita más epochs"],correct:1,exp:"Overfitting: modelo aprende ruido del training. Soluciones: regularización, dropout, más datos"},
+{q:"¿Qué es Transfer Learning?",opts:["Transferir datos","Usar modelo pre-entrenado como punto de partida","Transferir conocimiento humano","Mover archivos"],correct:1,exp:"Transfer Learning reutiliza modelos pre-entrenados (ej: ImageNet). Reduce tiempo de entrenamiento y datos necesarios"},
+{q:"¿División típica de datos en ML?",opts:["50-50 train-test","100% training","70-80% train, 10-15% validation, 10-15% test","No se divide"],correct:2,exp:"Training (70-80%), Validation (10-15%), Test (10-15%). Test NUNCA se usa durante entrenamiento"},
+{q:"¿Problema principal de sigmoid/tanh como funciones de activación?",opts:["Muy lentas","Vanishing gradient en extremos","No funcionan","Demasiado complejas"],correct:1,exp:"Sigmoid y tanh sufren de vanishing gradient: gradientes muy pequeños en los extremos, red no aprende"},
+{q:"¿Qué framework tiene el mejor ecosistema para PRODUCCIÓN?",opts:["PyTorch","Caffe","TensorFlow","JAX"],correct:2,exp:"TensorFlow tiene excelente ecosistema de producción: TF Serving, TF Lite (móviles), TF.js (web)"},
+{q:"¿Cuál fue la primera CNN que ganó ImageNet con gran margen (2012)?",opts:["LeNet","AlexNet","VGG","ResNet"],correct:1,exp:"AlexNet (2012) ganó ImageNet con gran margen, marcando el inicio de la era moderna del Deep Learning"},
+{q:"¿Qué método de NLP captura 'king - man + woman ≈ queen'?",opts:["One-hot encoding","Word2Vec embeddings","Bag of words","N-gramas"],correct:1,exp:"Word2Vec captura analogías mediante aritmética vectorial en el espacio de embeddings"},
+{q:"¿Qué arquitectura permite entrenar redes de 150+ capas?",opts:["VGG","AlexNet","ResNet con skip connections","LeNet"],correct:2,exp:"ResNet usa skip connections que previenen vanishing gradient, permitiendo 50-152+ capas"},
+{q:"¿Qué modelo alcanzó 175 billones de parámetros?",opts:["BERT","GPT-2","GPT-3","AlexNet"],correct:2,exp:"GPT-3 (OpenAI 2020) tiene 175B parámetros y demuestra few-shot learning"},
+{q:"En DQN, ¿para qué sirve Experience Replay?",opts:["Aumentar velocidad","Romper correlación temporal, estabilizar entrenamiento","Reducir memoria","Visualizar datos"],correct:1,exp:"Experience Replay almacena transiciones y entrena con mini-batches aleatorios, rompiendo correlación temporal"},
+{q:"¿Qué significa que ReLU tiene 'dying ReLU'?",opts:["Es muy lenta","Neuronas que nunca se activan (output=0)","Consume mucha memoria","No converge"],correct:1,exp:"Dying ReLU: neuronas que nunca se activan tras cambio grande en gradiente. Solución: Leaky ReLU"},
+{q:"¿Objetivo de Batch Normalization?",opts:["Reducir batch size","Normalizar activaciones por mini-batch para acelerar entrenamiento","Eliminar batches","Aumentar learning rate"],correct:1,exp:"Batch Normalization normaliza activaciones de cada capa por mini-batch, acelerando DRAMÁTICAMENTE el entrenamiento"},
+{q:"¿Qué es Self-Attention en Transformers?",opts:["Red que se entrena sola","Cada palabra 'atiende' a todas las demás","Atención a uno mismo","No existe"],correct:1,exp:"Self-Attention: cada palabra calcula pesos de atención con todas las demás. Base de Transformers"},
+{q:"En producción ML, ¿qué es Model Drift?",opts:["Modelo se mueve físicamente","Degradación de performance por cambio en datos de producción","Un optimizador","Tipo de regularización"],correct:1,exp:"Model Drift: degradación de performance porque datos de producción cambian vs datos de entrenamiento"},
+{q:"¿Para qué sirve TensorFlow Serving?",opts:["Entrenar modelos","Servir modelos en producción vía APIs","Procesar datos","Visualizar resultados"],correct:1,exp:"TensorFlow Serving es sistema flexible y de alto rendimiento para servir modelos TF en producción vía REST/gRPC"},
+{q:"¿Diferencia entre exploración y explotación en RL?",opts:["Son lo mismo","Exploración=probar nuevo, Explotación=usar conocido","No importa","Solo existe explotación"],correct:1,exp:"Exploración: probar acciones nuevas. Explotación: usar conocimiento actual. Equilibrar ambas es fundamental en RL"},
+{q:"¿Qué embeddings generan diferentes vectores según contexto?",opts:["Word2Vec","GloVe","ELMo y BERT (contextuales)","FastText"],correct:2,exp:"Embeddings contextuales (ELMo, BERT) generan diferentes vectores según contexto. 'banco' financiero vs 'banco' de peces"},
+{q:"¿Cuántas capas tiene típicamente VGG-16?",opts:["8","16","19","50"],correct:1,exp:"VGG-16 tiene 16 capas usando solo kernels 3x3. Simple pero efectiva. 138 millones de parámetros"}
+];
+function showSection(e){document.querySelectorAll('.section').forEach(t=>t.classList.remove('active')),document.getElementById(e).classList.add('active'),document.querySelectorAll('.nav-btn').forEach(t=>t.classList.remove('active')),event.target.classList.add('active'),updateProgress(e),window.scrollTo({top:0,behavior:'smooth'}),currentSection=e,'flashcards'===e&&loadFlashcards(),'cuestionario'===e&&loadQuestion()}
+function updateProgress(e){const t=['inicio','tema1','tema2','tema3','tema4','tema5','tema6','tema7','tema8','tema9','tema10','tema11','flashcards','cuestionario'],o=t.indexOf(e);document.getElementById('progress').style.width=(o+1)/t.length*100+'%'}
+function loadFlashcards(){const e=document.getElementById('flashcard-container');if(e.children.length>0)return;flashcards.forEach(t=>{const o=document.createElement('div');o.className='flashcard',o.onclick=()=>o.classList.toggle('flipped'),o.innerHTML=`<div class="flashcard-inner"><div class="flashcard-front"><div style="font-size:1.2rem;font-weight:700;margin-bottom:1rem">${t.term}</div><p style="font-size:.9rem;opacity:.9">Click para ver definición</p></div><div class="flashcard-back"><div style="font-size:1rem;line-height:1.5">${t.definition}</div></div></div>`,e.appendChild(o)})}
+function loadQuestion(){const e=questions[currentQuestion],t=document.getElementById('quiz-container');let o=`<div class="question-card"><div class="question-number">Pregunta ${currentQuestion+1}/${questions.length}</div><div class="question-text">${e.q}</div><div class="options">`;e.opts.forEach((e,t)=>{o+=`<div class="option" onclick="selectOption(${t})"><div class="option-letter">${String.fromCharCode(65+t)}</div><div>${e}</div></div>`}),o+=`</div><div class="explanation" id="explanation"><div style="font-weight:700;color:#e65100;margin-bottom:.75rem">💡 Explicación</div><div>${e.exp}</div></div></div>`,t.innerHTML=o,document.getElementById('current-q').textContent=currentQuestion+1,answered=!1,selectedOption=null,document.getElementById('check-btn').style.display='inline-block',document.getElementById('next-btn').style.display='none'}
+function selectOption(e){if(answered)return;document.querySelectorAll('.option').forEach(e=>e.classList.remove('selected')),document.querySelectorAll('.option')[e].classList.add('selected'),selectedOption=e}
+function checkAnswer(){if(answered)return;if(null===selectedOption)return void alert('Selecciona una respuesta');const e=questions[currentQuestion].correct,t=document.querySelectorAll('.option');t[e].classList.add('correct'),selectedOption===e?(score++,document.getElementById('score').textContent=score):t[selectedOption].classList.add('incorrect'),document.getElementById('explanation').classList.add('show'),answered=!0,document.getElementById('check-btn').style.display='none',document.getElementById('next-btn').style.display='inline-block'}
+function nextQuestion(){currentQuestion++,currentQuestion<questions.length?loadQuestion():showResults()}
+function showResults(){const e=score/questions.length*100;let t,o;e>=90?(t='badge-excellent',o='¡Excelente! Dominas Sistemas Cognitivos Artificiales completamente. ¡Listo para el examen! 🎓✨'):e>=75?(t='badge-good',o='¡Muy bien! Sólido conocimiento. Repasa algunos conceptos específicos. 👍📚'):e>=60?(t='badge-fair',o='Buen progreso. Revisa los temas donde tuviste dificultades. 💪📖'):(t='badge-poor',o='Necesitas estudiar más el material. Repasa la guía completa. 🔥📚'),document.getElementById('final-score').textContent=`${score}/${questions.length}`,document.getElementById('badge').className='performance-badge '+t,document.getElementById('badge').textContent=Math.round(e)+'%',document.getElementById('feedback').textContent=o,document.getElementById('overlay').classList.add('show'),document.getElementById('result-modal').classList.add('show')}
+function closeModal(){document.getElementById('overlay').classList.remove('show'),document.getElementById('result-modal').classList.remove('show')}
+function restartQuiz(){currentQuestion=0,score=0,document.getElementById('score').textContent='0',closeModal(),loadQuestion()}
+document.addEventListener('DOMContentLoaded',()=>updateProgress('inicio'));
+</script>
+</body>
+</html>
